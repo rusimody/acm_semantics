@@ -1,0 +1,23 @@
+The (Abstract) Syntax
+
+> ctype Aexp where
+>   Icon               : Int -> Aexp
+>   Ivar               : Variable -> Aexp
+>   Add, Sub, Mul, Div : Aexp -> Aexp -> Aexp
+
+> ctype Bexp where
+>   Bcon              : Bool -> Bexp
+>   Bvar              : Variable -> Bexp
+>   And, Or           : Bexp -> Bexp -> Bexp
+>   Less, Lesseq, Eql : Aexp -> Aexp -> Bexp
+
+> ctype Exp where
+>   Arith     : Aexp -> Exp
+>   Boolean   : Bexp -> Exp
+
+> ctype Statement where
+>   Skip, Abort : Statement
+>   Assgn       : Variable -> Exp -> Statement
+>   Seq         : Statement -> Statement -> Statement
+>   If1, While  : Bexp -> Statement -> Statement 
+>   Ifelse      : Bexp -> Statement -> Statement -> Statement

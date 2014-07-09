@@ -1,0 +1,60 @@
+
+> whilep = tp.(WhileTok ==)
+> dop = tp.(DoTok ==)
+> odp = tp.(OdTok ==)
+> ifp = tp.(IfTok ==)
+> thenp = tp.(ThenTok ==)
+> elsep = tp.(ElseTok ==)
+> fip = tp.(FiTok ==)
+> skipp = tp.(SkipTok ==) ->- const.Skip
+> abortp = tp.(AbortTok ==) ->- const.Abort
+> del.lex = tp.f where
+>   f.(Delim.l) = l == lex
+>   f._		= False
+> nump = tp.f ->- (\ (Numlit.x) -> x) where
+>   f.(Numlit._) = True
+>   f._		= False
+> identp = tp.f ->- (\ (Ident.x) -> x)  where
+>   f.(Ident._) = True
+>   f._		= False
+
+---------------------------------------------------------------------
+
+> program = stmtlistp
+> stmtlistp = listsep1.stmtp.(del.";") ->-- (\ ss _ -> foldr1.Seq.ss)
+> atomicStmtp = skipp
+>            <|> abortp
+>            <|> identp <&> del.":=" -&> nump ->--
+>                           (\ v n -> Assgn.v.(Arith.(Icon.n)))
+> stmtp =    atomicStmtp
+>        <|> ifp -&> orexpp <&> thenp -&> stmtlistp <&- fip ->-- If1
+
+> arithopal = [(Delim."+", Add),
+>              (Delim."-", Sub),
+>              (Delim."*", Mul),
+>              (Delim."/", Div)]
+> boolopal  = [(Delim."&", And),
+>              (Delim."|", Or)]
+> relopal   = [(Delim."<", Less),
+>              (Delim."=", Eql),
+>	       (Delim."<=", Lesseq)]
+>
+> expp =   aexpp
+>      <|> bexpp
+> aexpp = aopexpp  ->- Arith
+> aopexpp = listsep1.mulopexpp.addopp ->-- insops.arithopal
+> addopp = del."+" <|> del."-"
+> mulopexpp = listsep1.factorp.mulopp ->-- insops.arithopal
+> mulopp = del."*" <|> del."/"
+> factorp = aritatomp <|>
+>    del."(" -&> aopexpp <&- del.")"
+> aritatomp = nump ->- Icon
+>       <|> identp ->- Ivar
+
+> bexpp = orexpp ->- Boolean
+> orexpp = listsep1.andexpp.(del."|") ->-- insops.[(Delim."|", Or)]
+> andexpp = listsep1.boolfactorp.(del."&") ->-- insops.[(Delim."&", And)]
+> boolfactorp = boolatomp     -- negation to be added here
+> boolatomp = identp ->- Bvar
+>          <|> boolconp ->- Bcon
+> boolconp = error."Boolean constants not yet implemented"

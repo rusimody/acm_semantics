@@ -1,0 +1,42 @@
+#+TITLE: Links and References
+#+OPTIONS: toc:nil
+* Blog
+My blog is http://blog.languager.org 
+
+Take down only this much.  Rest of this class you will find there!
+
+
+In particular you will find the links for this class there.
+
+SO dont waste your time taking down any more after this point!!
+
+* In more detail
+Things labelled under functional programming are at:
+http://blog.languager.org/search/label/FP 
+
+Specifically:
+
+The lost booty: 
+http://blog.languager.org/2012/10/functional-programming-lost-booty.html
+
+FP invades the mainstream:
+http://blog.languager.org/2013/06/functional-programming-invades.html
+
+Pervasiveness (and misunderstandings!) of recursion:
+http://blog.languager.org/2012/05/recursion-pervasive-in-cs.html
+
+Other things are a bit technical:
+What SICP gets wrong
+http://blog.languager.org/2013/08/applying-si-on-sicp.html
+* Teaching Programming 
+
+C Paper:
+http://www.the-magus.in/Publications/chor.pdf
+Or why teaching CS with C triples the length of the CS curriculum without
+adding any content!
+* gofer
+Original of Mark Jones:
+http://web.cecs.pdx.edu/~mpj/goferarc/index.html
+
+My modifications:
+https://github.com/rusimody/gofer

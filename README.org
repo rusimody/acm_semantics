@@ -1,0 +1,3 @@
+#+TITLE: Semantics Class Material
+The stuff I did (and did not!) in the ACM mathematical models class
+in Pune VIT on 9th July 2014

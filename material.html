@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Semantics of Programs</title>
+<meta name="author" content="(Rusi Mody)"/>
+<link rel="stylesheet" href="./reveal.js/css/reveal.min.css"/>
+<link rel="stylesheet" href="./reveal.js/css/theme/default.css" id="theme"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section>
+<h1>Semantics of Programs</h1>
+<h2>Rusi Mody</h2>
+<h2><a href="mailto:siva@debian64.HomeNet">siva@debian64.HomeNet</a></h2>
+<h2></h2></section>
+<section>
+<h2>Table of Contents</h2><ul>
+<li>
+<a href="#sec-1">Nature of Formal Language</a>
+</li>
+<li>
+<a href="#sec-2">Small Example of Reasoning</a>
+</li>
+<li>
+<a href="#sec-3">Examples of mixup</a>
+</li>
+<li>
+<a href="#sec-4">Formal and Informal</a>
+</li>
+<li>
+<a href="#sec-5">Finite and Infinite</a>
+</li>
+<li>
+<a href="#sec-6">David Bohm</a>
+<ul>
+<li>
+<a href="#sec-6-1">Rheomode</a>
+</li>
+<li>
+<a href="#sec-6-2">Relevate</a>
+</li>
+</ul>
+<li>
+<a href="#sec-7">'How' and What mixed up</a>
+</li>
+<li>
+<a href="#sec-8">Advantage of multiple assignment</a>
+</li>
+<li>
+<a href="#sec-9">Example of ∞ loop</a>
+</li>
+<li>
+<a href="#sec-10">Example of SOS (Plotkin)</a>
+</li>
+</ul>
+</section>
+<STYLE> OL {list-style: circle inside lower-alpha} </STYLE>
+<section>
+<section id="sec-1" >
+
+<h2><span class="section-number-2">1</span> Nature of Formal Language</h2>
+<ol class="org-ol">
+<li class="fragment roll-in">At the outset &#x2013; 'formal' is a contradiction!
+</li>
+<li class="fragment roll-in">If you dont believe me explain what 'formal' means to your grandmother
+</li>
+<li class="fragment roll-in">And then what it means for a language <br >
+   (eg हिन्दी/मराठी/ગુજરાતી/தமிள்)
+to be formal
+</li>
+</ol>
+</section>
+</section>
+<section>
+<section id="sec-2" >
+
+<h2><span class="section-number-2">2</span> Small Example of Reasoning</h2>
+<div class="org-src-container">
+
+<pre  class="src src-C"><span style="color: #a020f0;">while</span> (i &lt; N &amp;&amp; a[i] != X)
+  i++
+</pre>
+</div>
+
+<p>
+Post: i &gt;=N || a[i] == X
+</p>
+
+<p>
+Note: <b>Two</b> systems are at play
+</p>
+<ul class="org-ul">
+<li>The <b>programming</b> idea of while loop tells us that 
+at loop end the loop condition is false
+</li>
+<li>The <b>Logic</b> idea (deMorgan's law) tells us that
+¬(P ∧ Q) ≡ ¬P ∨ ¬Q
+</li>
+</ul>
+<p>
+We need to use both, in the right order and not mix up these two languages
+</p>
+</section>
+</section>
+<section>
+<section id="sec-3" >
+
+<h2><span class="section-number-2">3</span> Examples of mixup</h2>
+<p>
+classic = is equality in math assignment in C
+</p>
+</section>
+</section>
+<section>
+<section id="sec-4" >
+
+<h2><span class="section-number-2">4</span> Formal and Informal</h2>
+<p>
+<i>Intention</i> is Informal
+<i>Encoding</i> is Formal
+</p>
+
+<p>
+The purpose of programming is to blend these two efficiently and
+effectively
+</p>
+
+<p>
+The purpose of semantics is to separate (unblend) these two
+</p>
+</section>
+</section>
+<section>
+<section id="sec-5" >
+
+<h2><span class="section-number-2">5</span> Finite and Infinite</h2>
+<p>
+Structural Induction
+</p>
+</section>
+</section>
+<section>
+<section id="sec-6" >
+
+<h2><span class="section-number-2">6</span> David Bohm</h2>
+</section>
+<section id="sec-6-1" >
+
+<h3><span class="section-number-3">6.1</span> Rheomode</h3>
+<p>
+Thinking with verbs instead of nouns as primary
+</p>
+</section>
+<section id="sec-6-2" >
+
+<h3><span class="section-number-3">6.2</span> Relevate</h3>
+<p>
+The word ‘relevant’ derives from a verb ‘to relevate’, which means ‘to lift’ (as in ‘elevate’). In essence, ‘to relevate’ means ‘to lift into attention’, so that the content thus lifted stands out ‘in relief’. When a content lifted into attention is coherent or fitting with the context of interest, i.e. when it has some bearing on the context of some relationship to it, then one says that this content is relevant; and of course, when it does not fit in this way, it is said to be irrelevant.
+</p>
+</section>
+</section>
+<section>
+<section id="sec-7" >
+
+<h2><span class="section-number-2">7</span> 'How' and What mixed up</h2>
+<p>
+Why??? 
+</p>
+</section>
+</section>
+<section>
+<section id="sec-8" >
+
+<h2><span class="section-number-2">8</span> Advantage of multiple assignment</h2>
+</section>
+</section>
+<section>
+<section id="sec-9" >
+
+<h2><span class="section-number-2">9</span> Example of ∞ loop</h2>
+<p>
+We want p = xⁿ
+</p>
+<div class="org-src-container">
+
+<pre  class="fragment roll-in"><span style="color: #008b8b;">p</span>:=1
+<span style="color: #a020f0;">while</span> n &gt; 0
+  p,n := p*x, n-1
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre  class="fragment roll-in"><span style="color: #a020f0;">while</span> n &gt; 0
+  <span style="color: #a020f0;">if</span> even(n)
+     p,n := p*p, n/2
+  <span style="color: #a020f0;">else</span>
+     p,n := p*x, n-1
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre  class="fragment roll-in"><span style="color: #a020f0;">while</span> n &gt; 0
+  <span style="color: #a020f0;">while</span> even(n)
+     p,n := p*p, n/2
+  p,n := p*x, n-1
+</pre>
+</div>
+<p class="fragment roll-in">
+Extract inner loop
+</p>
+<div class="org-src-container">
+
+<pre  class="fragment roll-in"><span style="color: #a020f0;">while</span> even(n)
+   p,n := p*p, n/2
+</pre>
+</div>
+<p class="fragment roll-in highlight-red">
+Is this an infinite loop?
+THINK!
+</p>
+<p class="fragment roll-in">
+<b>Conclusion: Rice Theorem ⇒ Halting Problem: Unsolvable</b>
+</p>
+</section>
+
+</section>
+<section>
+<section id="sec-10" >
+
+<h2><span class="section-number-2">10</span> Example of SOS (Plotkin)</h2>
+<p>
+pg 17 sos-plotkin
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.min.js"></script>
+<script>
+
+        		// Full list of configuration options available here:
+        		// https://github.com/hakimel/reveal.js#configuration
+        		Reveal.initialize({
+        			controls: true,
+        			progress: true,
+        			history: false,
+        			center: true,
+                                slideNumber: true,
+        			rollingLinks: false,
+        			keyboard: true,
+        			overview: true,
+        			 // slide width
+        			 // slide height
+        			 // slide margin
+        			 // slide minimum scaling factor
+        			 // slide maximum scaling factor
+
+
+        			theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        			transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        			transitionSpeed: 'default',
+
+        			// Optional libraries used to extend on reveal.js
+        			dependencies: [
+        				{ src: './reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } }
+        				,{ src: './reveal.js/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } }
+        				,{ src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } }
+        				,{ src: './reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        				,{ src: './reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }
+        				,{ src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        				// { src: './reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+        				// { src: './reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+         				
+        			]
+        		});
+</script>
+</body>
+</html>
