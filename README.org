@@ -1,3 +1,5 @@
 #+TITLE: Semantics Class Material
 The stuff I did (and did not!) in the ACM mathematical models class
+Mathematical Modeling in CS Faculty Development Program 
+organized by ACM Pune and VIT, Pune
 in Pune VIT on 9th July 2014
