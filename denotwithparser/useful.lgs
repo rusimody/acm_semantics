@@ -1,0 +1,11 @@
+> ctype Possible.a where
+>   Ok   : a -> Possible.a
+>   Fail :      Possible.a
+> instance Text.a => Text.(Possible.a)
+
+> assoc.[].a = Fail
+> assoc.((x,v)::xs).y
+>  | x == y    = Ok.v
+>  | otherwise = assoc.xs.y
+
+> primitive gord "primCharToInt" : a -> Int

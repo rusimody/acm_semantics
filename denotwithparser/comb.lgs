@@ -1,0 +1,132 @@
+The parser combinators
+
+> infixr 7 <&>, -&>, <&-
+> infix 6 ->-, ->--, ->---
+> infixr 5 <|>
+
+> type Parser.t = [Lexeme] -> Possible.(t, [Lexeme])
+
+The combinator for terminals
+
+> tpp  : (Lexeme -> Bool) -> Parser.Lexeme
+
+> tpp.lp = parser where
+>   parser.[] = Fail
+>   parser.(t::ts) 
+>      | lp.t  = Ok.(t, ts)
+>      | otherwise = Fail
+
+> tp.d = tpp.(d==)
+
+del makes the parsers for lexemes that are Delims
+
+> del.lex = tpp.f where
+>   f.(Delim.l) = l == lex
+>   f._		= False
+
+The combinator for choice
+
+> (<|>) : Parser.a -> Parser.a -> Parser.a
+> p <|> q = parser where
+>    parser.l = case p.l of
+>          Fail -> q.l
+>	   x    -> x
+
+The combinators to modify trees 
+
+> (->-) : Parser.a -> (a->b) -> Parser.b
+> p ->- f = parser where
+>    parser.l = case p.l of
+>                 Ok.(t,r)  -> Ok.(f.t, r)
+>		  Fail	    -> Fail
+> (->--) : Parser.(a,b) -> (a -> b -> c) -> Parser.c
+> p ->-- f = p ->- uncurry.f
+> p ->--- f = p ->- (\ (x,(y,z)) -> f.x.y.z)
+
+The combinator for concatenation
+
+> (<&>) : Parser.a -> Parser.b -> Parser.(a,b)
+> p <&> q = parser where
+>   parser.l = case p.l of
+>                 Fail -> Fail
+>                 Ok.(t,r) -> case q.r of
+>                               Fail  -> Fail
+>				Ok.(t', r') -> Ok.((t,t'), r')
+
+> p <&- q = p <&> q ->-- const
+> p -&> q = p <&> q ->-- flip.const
+
+The parser that always succeeds
+
+> succeedp : Parser.()
+> succeedp.l = Ok.((),l)
+
+The parser that always fails
+
+> failp : Parser.a
+> failp.l = Fail
+
+The parsers for lists of things
+
+> list0, list1 : Parser.a -> Parser.[a]
+> list0.p =  p <&> list0.p ->-- (::)
+>           <|> succeedp ->- const.[]
+
+> list1.p = p <&> list0.p ->-- (::)
+
+> listsep0, listsep1 : Parser.a -> Parser.b -> Parser.([a], [b])
+
+> listsep1.p.s = p <&> list0.(s <&> p) ->-- 
+>                     (\ p spl -> let (sl, pl) = unzip.spl in (p::pl, sl))
+
+> listsep0.p.s = listsep1.p.s
+>                <|> succeedp ->- const.([], [])
+
+When we want to throw away the separators
+
+> listsep1d.p.s = listsep1.p.s ->- fst
+> listsep0d.p.s = listsep0.p.s ->- fst
+
+-----------------------------------------------------------------
+The functions for building binary op expressions
+
+insert ops -- right associatively
+
+> insopsr.opal.[x]._  = x
+> insopsr.opal.(x::xs).(op::ops) =
+>      case assoc.opal.op of
+>           Ok.constr ->  x `constr` insopsr.opal.xs.ops
+>           Fail      -> error.("insopsr: operator not found " ++ show.op)
+
+> insopsl.opal.(x::xs).ops = f.xs.ops.x
+>  where f.[]._.a = a
+>        f.(x::xs).(op::ops).a = 
+>          case assoc.opal.op of
+>             Ok.constr -> f.xs.ops.(a `constr` x)
+>             Fail      ->  error.("insopsl: operator not found " ++ show.op)
+
+> insopsn.opal.[x].[] = x
+> insopsn.opal.[x,y].[op] = 
+>       case assoc.opal.op of
+>             Ok.constr -> x `constr` y
+>             Fail      -> error.("insopsn: operator not found " ++ show.op) 
+> insopsn.opal.xs.ops = 
+>          error."insopsn: Non associative operator used associatively"
+
+A combinator specially for binary ops
+It takes a term parser and name-Constructor al with the associativity
+
+> ctype Associativity where
+>   L, R, N: Associativity
+
+> makebexp.(as,ncal).tp = listsep1.tp.opsp ->-- inserter.lexcal
+>         where lexcal = [(Delim.n, c) | (n,c) <- ncal]
+>               opsp   = foldr.(<|>).failp.[del.n | (n, _) <- ncal]
+>               inserter = case as of 
+>                 L -> insopsl
+>                 R -> insopsr
+>                 N -> insopsn
+
+> makegbexp = foldr.makebexp
+
+----------------------------------------------------------------------

@@ -1,0 +1,96 @@
+A (Denotational) model for a small imperative language
+
+First the value domain.
+Values can be integers or bools.
+
+> ctype Value where
+>    Ival : Int  -> Value
+>    Bval : Bool -> Value
+
+Variables will be modelled as strings -- their names
+
+> type Variable = String
+
+The current state of a computation is modelled as an environment -- a mapping
+from Variable to Value.  The mapping is itself modelled as an alist.
+
+> type State = [(Variable, Value)]
+
+Statements are State to State transformers and expressions are State to Value
+transformers. Here are the models:
+
+> type Stmtmodel = State -> State
+> type Expmodel  = State -> Value
+
+----------------------------------------------------------------
+Now for the basic functions on our model
+
+The two functions on State are lookup and setstate
+
+> lookup : State -> Variable -> Value
+> setstate : State -> Variable -> Value -> State
+
+> lookup.((x,v)::el).y
+>   | x == y    = v
+>   | otherwise = lookup.el.y
+> lookup.[].y   = error.("lookup: " ++ y ++ "not defined in state")
+
+> setstate.(p@(x,v)::el).y.newval
+>   | x == y    = (x,newval) :: el
+>   | otherwise = p :: setstate.el.y.newval
+> setstate.[].y._ = error.("setstate: " ++ y ++ "not defined in state")
+
+The aspects of the model needed for if, while
+
+> ifelsemodel : Expmodel -> Stmtmodel -> Stmtmodel -> Stmtmodel
+> ifelsemodel.p.q.r.state = if cond then q.state else r.state
+>    where cond = case p.state of
+>                 Bval.b -> b
+>                 _      -> error.("ifelsemodel: " ++ "condition not boolean")
+
+> if1model, whilemodel : Expmodel -> Stmtmodel -> Stmtmodel
+> if1model.p.q.state = if cond then q.state else state
+>   where  cond = case p.state of
+>                  Bval.b -> b
+>                  _      -> error.("if1model: " ++ "condition not boolean")
+> whilemodel.p.q.state = if cond then whilemodel.p.q.(q.state) else state
+>   where cond = case p.state of
+>                 Bval.b -> b
+>                 _      -> error.("whilemodel: " ++ "condition not boolean")
+
+----------------------------------------------------------------------
+
+The models for the primitives
+
+> plusmodel, minusmodel, mulmodel, divmodel : Value -> Value -> Value
+
+plusmodel.(Ival.x).(Ival.y) = Ival.(x+y)
+plusmodel._._  = error.("plusmodel: " ++ "arguments of wrong type")
+
+This is however a bit of a bore
+Considering the repetition it is nice to write a ho function
+
+> aemodelgen : (Int-> Int -> Int) -> String -> (Value -> Value -> Value)
+> aemodelgen.op.opname.(Ival.x).(Ival.y) = Ival.(x `op` y)
+> aemodelgen.op.opname._._ = error.(opname ++ " : arguments of wrong type")
+
+> plusmodel = aemodelgen.(+)."plusmodel"
+> minusmodel = aemodelgen.(-)."minusmodel"
+> mulmodel = aemodelgen.(*)."mulmodel"
+> divmodel = aemodelgen.(/)."divmodel"
+
+Similarly for bemodelgen and relmodelgen
+
+> bemodelgen : (Bool-> Bool -> Bool) -> String -> (Value -> Value -> Value)
+> bemodelgen.op.opname.(Bval.x).(Bval.y) = Bval.(x `op` y)
+> bemodelgen.op.opname._._ = error.(opname ++ " : arguments of wrong type")
+
+> relmodelgen : (Int-> Int -> Bool) -> String -> (Value -> Value -> Value)
+> relmodelgen.op.opname.(Ival.x).(Ival.y) = Bval.(x `op` y)
+> relmodelgen.op.opname._._ = error.(opname ++ " : arguments of wrong type")
+
+> andmodel, ormodel, eqmodel, lessmodel : Value -> Value -> Value
+> andmodel = bemodelgen.(&&)."andmodel"
+> ormodel  = bemodelgen.(||)."ormodel"
+> lessmodel = relmodelgen.(<)."lessmodel"
+> eqmodel = relmodelgen.(==)."eqmodel"

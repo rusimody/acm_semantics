@@ -1,0 +1,68 @@
+The lexer
+
+> ctype Lexeme where
+>     WhileTok, DoTok, OdTok, IfTok, ThenTok, ElseTok, FiTok : Lexeme
+>     SkipTok, AbortTok : Lexeme
+>     Delim  : String   -> Lexeme
+>     Ident  : String -> Lexeme
+>     Numlit : Int    -> Lexeme    
+>     EOF    : Lexeme
+>     BadTok : Char   -> Lexeme
+
+> instance Eq.Lexeme where
+>     Delim.x == Delim.y = x == y
+>     Delim.x == _	 = False
+>     Ident.x == Ident.y = x == y
+>     Ident.x == _	 = False
+>     Numlit.x == Numlit.y = x == y
+>     Numlit.x == _	   = False
+>     BadTok.x == BadTok.y = x == y
+>     BadTok.x == _ = False
+>     x == y               = gord.x == gord.y
+> instance Text.Lexeme
+
+> type InStream = [Char]
+> type OutStream = [Lexeme]
+> type Lexer  = InStream -> OutStream
+> type LexStep = InStream -> (Lexeme, InStream)
+> delims = ";+-*/&|()"
+> isDelim = (`elem` delims)
+> keywords  = [("while", WhileTok),
+>              ("do", DoTok),
+>              ("od", OdTok),
+>              ("if", IfTok),
+>              ("then", ThenTok),
+>              ("else", ElseTok),
+>              ("fi", FiTok),
+>	       ("skip", SkipTok),
+>	       ("abort", AbortTok)]
+
+> lexer : Lexer
+> lexer.l  = case lexStep.l of
+>     (EOF, _)         -> []
+>     (BadTok.c, _)    -> error.("Lexer error near " ++ [c])
+>     (lexeme, remain) -> lexeme :: lexer.remain
+
+> lexStep : LexStep
+> lexStep.[]   = (EOF,[])
+> lexStep.(l@(c::cs))
+>   |isSpace.c = lexStep.cs
+>   |isDigit.c = let (s,r) = span.isDigit.l in (Numlit.(makeInt.s), r)
+>   |isAlpha.c = let (s,r) = span.isAlphanum.l in (identOrKey.s, r)
+>   |isDelim.c = (Delim.[c], cs)
+>   |c==':'    = finishAssign.cs
+>   |c=='<'    = lessOrleseq.cs
+>   |otherwise = (BadTok.c, cs)
+
+> finishAssign.[] = (BadTok.':', [])
+> finishAssign.('='::cs) = (Delim.":=", cs)
+> finishAssign.(c::cs) = (BadTok.c, cs)
+
+> lessOrleseq.[] = (Delim."<", [])
+> lessOrleseq.('='::cs) = (Delim."<=", cs)
+> lessOrleseq.cs = (Delim."<", cs)
+
+> makeInt = foldl.(\ i c -> 10*i + ord.c - ord.'0').0
+> identOrKey.s = case assoc.keywords.s of
+>        Fail  -> Ident.s
+>        Ok.x  -> x

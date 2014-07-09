@@ -1,0 +1,27 @@
+The (Abstract) Syntax
+It is important to note that if the following infix decls are not consistent
+with the parser, the expressions would look confusingly different.
+
+> infixr 2 `Seq`
+> infix 3 `Assgn`
+> infixr 4 `Or`
+> infixr 5 `And`
+> infix 6 `Less`, `Lesseq`, `Eql`
+> infixl 7 `Add`, `Sub`
+> infixl 8 `Mul`, `Div`
+
+> ctype Exp where
+>   Icon : Int -> Exp
+>   Bcon : Bool -> Exp
+>   Var : Variable -> Exp
+>   And, Or, Less, Lesseq, Eql, Add, Sub, Mul, Div : Exp -> Exp -> Exp
+
+> ctype Statement where
+>   Skip, Abort : Statement
+>   Assgn       : Variable -> Exp -> Statement
+>   Seq         : Statement -> Statement -> Statement
+>   If1, While  : Exp -> Statement -> Statement 
+>   Ifelse      : Exp -> Statement -> Statement -> Statement
+
+> instance Text.Exp
+> instance Text.Statement

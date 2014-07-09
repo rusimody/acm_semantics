@@ -1,0 +1,45 @@
+The parsers for the terminals
+
+> [        whilep,   dop,   odp,   ifp,   thenp,   elsep,   fip]   =
+>  map.tp.[WhileTok, DoTok, OdTok, IfTok, ThenTok, ElseTok, FiTok]
+> skipp = tp.SkipTok ->- const.Skip
+> abortp = tp.AbortTok ->- const.Abort
+> nump = tpp.f ->- (\ (Numlit.x) -> x) where
+>   f.(Numlit._) = True
+>   f._		= False
+> identp = tpp.f ->- (\ (Ident.x) -> x)  where
+>   f.(Ident._) = True
+>   f._		= False
+
+---------------------------------------------------------------------
+
+> parser = stmtlistp
+> stmtlistp = listsep1d.stmtp.(del.";") ->- foldr1.Seq
+> stmtp =  atomicStmtp
+>      <|> ifp -&> expp <&> thenp -&> stmtlistp <&- fip ->-- If1
+>      <|> ifp -&> expp <&> thenp -&> stmtlistp <&> elsep -&>
+>                  stmtlistp <&- fip   ->--- Ifelse
+>      <|> whilep -&> expp <&> dop -&> stmtlistp <&- odp ->-- While
+
+> atomicStmtp =  skipp
+>            <|> abortp
+>            <|> identp <&> del.":=" -&> expp ->-- Assgn
+
+> factorp =  nump ->- Icon
+>        <|> identp ->- Var
+>        <|> del."(" -&> expp <&- del.")"
+
+> expp = makegbexp.factorp.[(R, [("|", Or)])                              ,
+>			    (R, [("&", And)])                             ,
+>			    (N, [("<", Less), ("<=", Lesseq), ("=", Eql)]),
+>			    (L, [("+", Add), ("-", Sub)])                 ,
+>			    (L, [("*", Mul), ("/", Div)])                 ]
+
+> frontEnd.s = case (lexer;parser).s of
+>         Ok.(a,[]) -> a
+>         Ok.(a,b)  -> error.("Some junk at the end of program" ++ show.b)
+>         Fail -> error."Parse failed"
+
+> frontEndIO        : String -> String -> Dialogue
+> frontEndIO.inp.out = readFile.inp.abort.
+>                      (\s -> writeFile.out.((frontEnd;show).s).abort.done)
