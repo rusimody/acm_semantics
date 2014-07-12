@@ -1,0 +1,83 @@
+#+TITLE: Semantics of Programs
+#+REVEAL_HTML: <STYLE> OL {list-style: circle inside lower-alpha} </STYLE>
+* Nature of Formal Language
+#+ATTR_REVEAL: :frag roll-in
+1. At the outset -- 'formal' is a contradiction!
+2. If you dont believe me explain what 'formal' means to your grandmother
+3. And then what it means for a language \\
+   (eg हिन्दी/मराठी/ગુજરાતી/தமிள்)
+   to be formal
+* Small Example of Reasoning
+#+BEGIN_SRC C
+while (i < N && a[i] != X)
+  i++
+ 
+#+END_SRC
+
+Post: i >=N || a[i] == X
+
+Note: *Two* systems are at play
+  - The *programming* idea of while loop tells us that 
+    at loop end the loop condition is false
+  - The *Logic* idea (deMorgan's law) tells us that
+    ¬(P ∧ Q) ≡ ¬P ∨ ¬Q
+  We need to use both, in the right order and not mix up these two languages
+* Examples of mixup
+classic = is equality in math assignment in C
+* Formal and Informal
+/Intention/ is Informal
+/Encoding/ is Formal
+
+The purpose of programming is to blend these two efficiently and
+effectively
+
+The purpose of semantics is to separate (unblend) these two
+* Finite and Infinite
+Structural Induction
+* David Bohm
+** Rheomode
+Thinking with verbs instead of nouns as primary
+** Relevate
+The word ‘relevant’ derives from a verb ‘to relevate’, which means ‘to lift’ (as in ‘elevate’). In essence, ‘to relevate’ means ‘to lift into attention’, so that the content thus lifted stands out ‘in relief’. When a content lifted into attention is coherent or fitting with the context of interest, i.e. when it has some bearing on the context of some relationship to it, then one says that this content is relevant; and of course, when it does not fit in this way, it is said to be irrelevant.
+* 'How' and What mixed up
+Why??? 
+* Advantage of multiple assignment
+* Example of ∞ loop
+We want p = xⁿ
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC C
+p:=1
+while n > 0
+  p,n := p*x, n-1
+#+END_SRC
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC C
+while n > 0
+  if even(n)
+     p,n := p*p, n/2
+  else
+     p,n := p*x, n-1
+#+END_SRC
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC C 
+while n > 0
+  while even(n)
+     p,n := p*p, n/2
+  p,n := p*x, n-1
+#+END_SRC 
+#+ATTR_REVEAL: :frag roll-in
+Extract inner loop
+#+ATTR_REVEAL: :frag roll-in
+#+BEGIN_SRC C
+while even(n)
+   p,n := p*p, n/2
+#+END_SRC
+#+ATTR_REVEAL: :frag roll-in highlight-red
+Is this an infinite loop?
+THINK!
+#+ATTR_REVEAL: :frag roll-in 
+*Conclusion: Rice Theorem ⇒ Halting Problem: Unsolvable*
+
+* Example of SOS (Plotkin)
+pg 17 sos-plotkin
+<font color="#9a0203" size="4">Formal&#160;</font><font size="4">/</font><font color="#0000ff" size="4">&#160;Informal</font>
